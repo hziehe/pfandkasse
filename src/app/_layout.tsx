@@ -21,6 +21,7 @@ export default function RootLayout() {
           <Stack.Screen name="add-crate" />
           <Stack.Screen name="submission-preparation" />
           <Stack.Screen name="submission-saved" options={{ gestureEnabled: false }} />
+          <Stack.Screen name="deposit-details" />
         </Stack>
       </ThemeProvider>
     </GestureHandlerRootView>

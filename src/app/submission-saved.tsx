@@ -3,7 +3,7 @@ import { formatEuro } from "@/constants/deposit";
 import { AssetImages } from "@/constants/images";
 import { MaxContentWidth, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
-import { useDepositHistory } from "@/lib/deposit-history";
+import { summarizeHistory, useDepositHistory } from "@/lib/deposit-history";
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -72,12 +72,7 @@ export default function SubmissionSavedScreen() {
   const history = useDepositHistory();
   const record = history.find((entry) => entry.id === id);
 
-  const now = new Date();
-  const monthTotal = history.filter((entry) => {
-      const date = new Date(entry.finishedAt);
-      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
-    }).reduce((sum, entry) => sum + entry.total, 0);
-  const allTimeTotal = history.reduce((sum, entry) => sum + entry.total, 0);
+  const { monthTotal, total: allTimeTotal } = summarizeHistory(history);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.inverseCard }]}>

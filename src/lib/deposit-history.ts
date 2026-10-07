@@ -1,3 +1,4 @@
+import type { DepositType } from "@/constants/theme";
 import { clearSession, summarize, type ScanEntry, type SessionSummary } from "@/lib/deposit-session";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSyncExternalStore } from "react";
@@ -61,6 +62,117 @@ export function getDeposit(id: string): DepositRecord | null {
   return records.find((record) => record.id === id) ?? null;
 }
 
+export function deleteDeposit(id: string) {
+  commit(records.filter((record) => record.id !== id));
+}
+
 export function useDepositHistory(): DepositRecord[] {
   return useSyncExternalStore(subscribe, () => records, () => records);
+}
+
+const WEEKDAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+const MONTHS = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+
+export function getMonthName(timestamp: number) {
+  return MONTHS[new Date(timestamp).getMonth()];
+}
+
+export function formatWeekdayShort(timestamp: number) {
+  return WEEKDAYS[new Date(timestamp).getDay()].slice(0, 2);
+}
+
+export function formatDayOfMonth(timestamp: number) {
+  return String(new Date(timestamp).getDate()).padStart(2, "0");
+}
+
+/** "Samstag, 3. Oktober" */
+export function formatLongDate(timestamp: number) {
+  const date = new Date(timestamp);
+  return `${WEEKDAYS[date.getDay()]}, ${date.getDate()}. ${MONTHS[date.getMonth()]}`;
+}
+
+export function formatTime(timestamp: number) {
+  const date = new Date(timestamp);
+  return `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+}
+
+export function formatCrates(count: number) {
+  return `${count} ${count === 1 ? "Kasten" : "Kästen"}`;
+}
+
+export function formatBottles(count: number) {
+  return `${count} ${count === 1 ? "Flasche" : "Flaschen"}`;
+}
+
+/** "18:05 · 2 Kästen · 40 Flaschen" */
+export function formatDepositDetails(record: DepositRecord) {
+  return [
+    formatTime(record.finishedAt),
+    record.crateCount > 0 && formatCrates(record.crateCount),
+    (record.bottleCount > 0 || record.crateCount === 0) && formatBottles(record.bottleCount),
+  ].filter(Boolean).join(" · ");
+}
+
+export type DepositFilter = "alle" | "einweg" | "mehrweg";
+
+const FILTER_TYPES: Record<Exclude<DepositFilter, "alle">, DepositType[]> = {
+  einweg: ["einweg"],
+  mehrweg: ["mehrweg", "glas", "kasten"],
+};
+
+export function matchesFilter(record: DepositRecord, filter: DepositFilter) {
+  if (filter === "alle") return true;
+  return record.breakdown.some((entry) => FILTER_TYPES[filter].includes(entry.type));
+}
+
+export type DepositGroup = {
+  key: string;
+  title: string;
+  currentWeek: boolean;
+  records: DepositRecord[];
+};
+
+function startOfWeek(now: number) {
+  const date = new Date(now);
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() - ((date.getDay() + 6) % 7));
+  return date.getTime();
+}
+
+export function groupDeposits(list: DepositRecord[], now = Date.now()): DepositGroup[] {
+  const weekStart = startOfWeek(now);
+  const groups: DepositGroup[] = [];
+  for (const record of [...list].sort((a, b) => b.finishedAt - a.finishedAt)) {
+    const currentWeek = record.finishedAt >= weekStart;
+    const date = new Date(record.finishedAt);
+    const key = currentWeek ? "week" : `${date.getFullYear()}-${date.getMonth()}`;
+    let group = groups.at(-1);
+    if (group?.key !== key) {
+      group = { key, title: currentWeek ? "Diese Woche" : `${MONTHS[date.getMonth()]} ${date.getFullYear()}`, currentWeek, records: [] };
+      groups.push(group);
+    }
+    group.records.push(record);
+  }
+  return groups;
+}
+
+export type HistoryStats = {
+  monthTotal: number;
+  monthCount: number;
+  total: number;
+  bottleCount: number;
+};
+
+export function summarizeHistory(list: DepositRecord[], now = Date.now()): HistoryStats {
+  const today = new Date(now);
+  const month = list.filter((record) => {
+    const date = new Date(record.finishedAt);
+    return date.getFullYear() === today.getFullYear() && date.getMonth() === today.getMonth();
+  });
+  return {
+    monthTotal: month.reduce((sum, record) => sum + record.total, 0),
+    monthCount: month.length,
+    total: list.reduce((sum, record) => sum + record.total, 0),
+    bottleCount: list.reduce((sum, record) => sum + record.bottleCount, 0),
+  };
 }
