@@ -1,18 +1,21 @@
 import { ScreenHeader } from "@/components/screen-header";
 import { TabScreen } from "@/components/tab-screen";
 import { ThemedText } from "@/components/themed-text";
-import { Spacing } from "@/constants/theme";
+import { BottomTabInset, Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { resetCameraPermissionChoice } from "@/lib/camera-permission";
 import { seedDemoSession } from "@/lib/deposit-session";
 import { resetOnboardingCompleted } from "@/lib/onboarding";
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function SettingsScreen() {
 
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const [resetting, setResetting] = useState(false);
 
   async function resetOnboarding() {
@@ -43,6 +46,9 @@ export default function SettingsScreen() {
           </ThemedText>
         </Pressable>
       </View>
+      <ThemedText themeColor="textSecondary" style={[styles.footer, { marginBottom: insets.bottom - BottomTabInset }]}>
+        Pfandkasse {Constants.expoConfig?.version} · Daten bleiben auf diesem Gerät
+      </ThemedText>
     </TabScreen>
   );
 }
@@ -52,6 +58,11 @@ const styles = StyleSheet.create({
     marginTop: "auto",
     gap: Spacing.three,
     marginBottom: Spacing.five
+  },
+  footer: {
+    fontSize: 12,
+    lineHeight: 16,
+    textAlign: "center"
   },
   button: {
     paddingVertical: Spacing.three,
