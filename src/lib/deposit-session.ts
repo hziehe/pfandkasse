@@ -70,8 +70,8 @@ function createId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function addScan(scan: NewScan): ScanEntry {
-  const entry: ScanEntry = {
+function toEntry(scan: NewScan): ScanEntry {
+  return {
     id: createId(),
     name: scan.name,
     volume: scan.volume,
@@ -79,8 +79,18 @@ export function addScan(scan: NewScan): ScanEntry {
     amount: scan.amount ?? getDepositInfo(scan.type).amount,
     scannedAt: scan.scannedAt ?? Date.now(),
   };
+}
+
+export function addScan(scan: NewScan): ScanEntry {
+  const entry = toEntry(scan);
   commit([...entries, entry]);
   return entry;
+}
+
+export function addScans(scans: NewScan[]): ScanEntry[] {
+  const added = scans.map(toEntry);
+  commit([...entries, ...added]);
+  return added;
 }
 
 export function undoLastScan(): ScanEntry | null {
