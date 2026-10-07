@@ -14,6 +14,9 @@ export const AssetImages = {
   settings: require("@/assets/images/settings.png"),
   left: require("@/assets/images/chevron-left.png"),
   undo: require("@/assets/images/undo-2.png"),
+  scanTemplate: require("@/assets/images/scan-template.png"),
+  close: require("@/assets/images/x.png"),
+  flashlight: require("@/assets/images/flashlight.png")
 } as const;
 
 export function preloadAssetImages() {

@@ -36,9 +36,10 @@ function edgeSwipe(direction: 1 | -1, onSwipe: () => void) {
 
 type TabScreenProps = {
   title: string;
+  fullBleed?: boolean;
   children?: ReactNode;
 };
-export function TabScreen({ title, children }: TabScreenProps) {
+export function TabScreen({ title, fullBleed = false, children }: TabScreenProps) {
 
   const theme = useTheme();
   const pathname = usePathname();
@@ -72,7 +73,7 @@ export function TabScreen({ title, children }: TabScreenProps) {
 
   return (
     <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
+      <SafeAreaView style={[styles.safeArea, fullBleed && styles.safeAreaFullBleed]} edges={fullBleed ? [] : ["top", "left", "right"]}>
         <View style={styles.content}>
           <Animated.View style={[styles.content, animatedStyle]}>
             {title !== "" && <ThemedText type="subtitle" style={styles.title}>
@@ -80,7 +81,7 @@ export function TabScreen({ title, children }: TabScreenProps) {
             </ThemedText>}
             <ThemedView style={styles.content}>{children}</ThemedView>
           </Animated.View>
-          {isTab &&
+          {isTab && !fullBleed &&
             <Pressable accessibilityRole="button" accessibilityLabel="Einstellungen" hitSlop={8} onPress={() => router.push("/settings")}
             style={({ pressed }) => [styles.settings, { backgroundColor: theme.card, borderColor: theme.tabBarBorder, opacity: pressed ? 0.7 : 1 }]}>
               <Image source={AssetImages.settings} style={[styles.settingsIcon, { tintColor: theme.text }]} />
@@ -114,6 +115,10 @@ const styles = StyleSheet.create({
     maxWidth: MaxContentWidth,
     paddingHorizontal: Spacing.four,
     paddingBottom: BottomTabInset + Spacing.three
+  },
+  safeAreaFullBleed: {
+    paddingHorizontal: 0,
+    paddingBottom: BottomTabInset
   },
   title: {
     paddingTop: Spacing.three,
