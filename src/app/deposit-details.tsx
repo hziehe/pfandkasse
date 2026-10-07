@@ -7,6 +7,7 @@ import { formatEuro } from "@/constants/deposit";
 import { Spacing } from "@/constants/theme";
 import { useDepositColors, useTheme } from "@/hooks/use-theme";
 import { deleteDeposit, formatDepositDetails, formatLongDate, useDepositHistory } from "@/lib/deposit-history";
+import { haptic } from "@/lib/haptics";
 import { formatScanTitle, type ScanEntry } from "@/lib/deposit-session";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMemo } from "react";
@@ -59,6 +60,7 @@ export default function DepositDetailsScreen() {
     confirmDelete(() => {
       router.back();
       deleteDeposit(id);
+      haptic("warning");
     });
   }
 

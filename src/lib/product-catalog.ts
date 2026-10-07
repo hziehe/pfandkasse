@@ -53,6 +53,11 @@ function load() {
   return loading;
 }
 
+export async function findCatalogProduct(ean: string): Promise<Product | null> {
+  await load();
+  return products[ean] ?? null;
+}
+
 export async function findProduct(ean: string): Promise<ProductMatch | null> {
   await load();
   const product = products[ean];
@@ -81,6 +86,13 @@ function reserveRequest() {
 export function saveProduct(product: Product) {
   products = { ...products, [product.ean]: product };
   AsyncStorage.setItem(KEY, JSON.stringify(products)).catch(() => {});
+}
+
+export async function clearProducts() {
+  await load();
+  products = {};
+  remoteLookups.clear();
+  AsyncStorage.removeItem(KEY).catch(() => {});
 }
 
 async function fetchOpenFoodFacts(ean: string): Promise<OffLookup> {

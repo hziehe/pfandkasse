@@ -1,4 +1,5 @@
 import type { DepositType } from "@/constants/theme";
+import { getDepositInfo } from "@/constants/deposit";
 import { clearSession, summarize, type ScanEntry, type SessionSummary } from "@/lib/deposit-session";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSyncExternalStore } from "react";
@@ -66,6 +67,16 @@ export function deleteDeposit(id: string) {
   commit(records.filter((record) => record.id !== id));
 }
 
+export async function clearHistory() {
+  await load();
+  commit([]);
+}
+
+export async function loadHistory(): Promise<DepositRecord[]> {
+  await load();
+  return records;
+}
+
 export function useDepositHistory(): DepositRecord[] {
   return useSyncExternalStore(subscribe, () => records, () => records);
 }
@@ -113,7 +124,31 @@ export function formatDepositDetails(record: DepositRecord) {
   ].filter(Boolean).join(" · ");
 }
 
-export type DepositFilter = "alle" | "einweg" | "mehrweg";
+function formatCsvDate(timestamp: number) {
+  const date = new Date(timestamp);
+  return `${String(date.getDate()).padStart(2, "0")}.${String(date.getMonth() + 1).padStart(2, "0")}.${date.getFullYear()}`;
+}
+
+function csvCell(value: string) {
+  return /[";\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+}
+
+export function historyToCsv(list: DepositRecord[]) {
+  const header = ["Datum", "Uhrzeit", "Produkt", "Volumen (l)", "Pfandart", "Pfand (€)"];
+  const rows = [...list].sort((a, b) => a.finishedAt - b.finishedAt).flatMap((record) =>
+    record.scans.map((scan) => [
+      formatCsvDate(record.finishedAt),
+      formatTime(record.finishedAt),
+      scan.name,
+      scan.volume ? String(scan.volume).replace(".", ",") : "",
+      getDepositInfo(scan.type).label,
+      (scan.amount / 100).toFixed(2).replace(".", ","),
+    ]),
+  );
+  return [header, ...rows].map((row) => row.map(csvCell).join(";")).join("\n");
+}
+
+export type DepositFilter ="alle" | "einweg" | "mehrweg";
 
 const FILTER_TYPES: Record<Exclude<DepositFilter, "alle">, DepositType[]> = {
   einweg: ["einweg"],

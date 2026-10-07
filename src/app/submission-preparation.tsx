@@ -9,6 +9,7 @@ import { AssetImages } from "@/constants/images";
 import { Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { saveDeposit } from "@/lib/deposit-history";
+import { haptic } from "@/lib/haptics";
 import { useDepositSession, type SessionSummary } from "@/lib/deposit-session";
 import { router } from "expo-router";
 import { useState } from "react";
@@ -25,6 +26,7 @@ export default function SubmissionPreparationScreen() {
     setSavedSummary(session.summary);
     const record = saveDeposit();
     if (record) {
+      haptic("success");
       router.replace({ pathname: "/submission-saved", params: { id: record.id } });
     }
   }

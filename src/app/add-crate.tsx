@@ -8,6 +8,7 @@ import { formatEuro } from "@/constants/deposit";
 import { Spacing } from "@/constants/theme";
 import { useTheme } from "@/hooks/use-theme";
 import { addScans, type NewScan } from "@/lib/deposit-session";
+import { haptic } from "@/lib/haptics";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
@@ -52,6 +53,7 @@ export default function AddCrateScreen() {
       }
     }
     addScans(scans);
+    haptic("success");
     router.back();
   }
 
