@@ -1,0 +1,57 @@
+{
+  "expo": {
+    "name": "pfandkasse-app",
+    "slug": "pfandkasse-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "pfandkasseapp",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/images"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1D6B44",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "monochromeImage": "./assets/images/adaptive-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#1D6B44",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 200,
+          "resizeMode": "contain"
+        }
+      ],
+      "expo-asset",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Pfandkasse nutzt die Kamera, um Barcodes von Pfandflaschen zu scannen. Es werden keine Fotos gespeichert.",
+          "recordAudioAndroid": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3c8b7950-740a-49f0-a6da-7f3a256453c0"
+      }
+    },
+    "owner": "sogares"
+  }
+}
