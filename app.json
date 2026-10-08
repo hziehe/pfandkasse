@@ -8,7 +8,11 @@
     "scheme": "pfandkasseapp",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/images"
+      "icon": "./assets/images",
+      "bundleIdentifier": "dev.ziehe.pfandkasse",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -16,7 +20,11 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "monochromeImage": "./assets/images/adaptive-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "dev.ziehe.pfandkasse",
+      "permissions": [
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "output": "static",
