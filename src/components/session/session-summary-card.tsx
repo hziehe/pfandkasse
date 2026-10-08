@@ -27,8 +27,7 @@ export function SessionSummaryCard({ summary }: SessionSummaryCardProps) {
         }
       </DepositDonut>
       <View style={styles.legendArea}>
-        {/* Unsichtbare Legende mit allen Pfandarten: hält die Card immer auf voller Höhe. */}
-        <View style={[styles.legend, styles.placeholder]} pointerEvents="none" aria-hidden importantForAccessibility="no-hide-descendants">
+        <View style={[styles.legend, styles.placeholder, { pointerEvents: "none" }]} aria-hidden importantForAccessibility="no-hide-descendants">
           {PLACEHOLDER_ROWS.map((entry) => <LegendRow key={entry.type} entry={entry} />)}
         </View>
         <View style={[styles.legend, styles.overlay]}>

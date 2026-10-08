@@ -54,8 +54,8 @@ export function FlyingBottle({ id, from, to, type, onArrive }: FlyingBottleProps
   });
 
   return (
-    <Animated.View pointerEvents="none" style={[styles.bottle, { backgroundColor: colors.background }, animatedStyle]}>
-      <Image source={type === "kasten" ? AssetImages.box : AssetImages.bottle} style={[styles.icon, { tintColor: colors.foreground }]} />
+    <Animated.View style={[styles.bottle, { backgroundColor: colors.background, pointerEvents: "none" }, animatedStyle]}>
+      <Image resizeMode="contain" source={type === "kasten" ? AssetImages.box : AssetImages.bottle} style={styles.icon} tintColor={colors.foreground} />
     </Animated.View>
   );
 }
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 24,
-    height: 24,
-    resizeMode: "contain"
+    height: 24
   }
 });

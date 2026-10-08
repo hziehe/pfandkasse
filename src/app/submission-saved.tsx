@@ -55,7 +55,7 @@ function SuccessBadge() {
       <Animated.View style={[styles.pulse, { borderColor: theme.primary }, pulseStyle]} />
       <Animated.View style={[styles.badgeRing, ringStyle]}>
         <Animated.View style={[styles.badge, { backgroundColor: theme.primary }, badgeStyle]}>
-          <Animated.Image source={AssetImages.check} style={[styles.badgeIcon, { tintColor: theme.inverseText }, checkStyle]} />
+          <Animated.Image resizeMode="contain" source={AssetImages.check} style={[styles.badgeIcon, checkStyle]} tintColor={theme.inverseText} />
         </Animated.View>
       </Animated.View>
     </View>
@@ -63,7 +63,7 @@ function SuccessBadge() {
 }
 
 function enter(index: number) {
-  return FadeInDown.delay(450 + index * 90).duration(450).easing(Easing.out(Easing.cubic));
+  return FadeInDown.delay(450 + index * 90).duration(450).easing(Easing.bezier(0.33, 1, 0.68, 1));
 }
 
 export default function SubmissionSavedScreen() {
@@ -173,8 +173,7 @@ const styles = StyleSheet.create({
   },
   badgeIcon: {
     width: 36,
-    height: 36,
-    resizeMode: "contain"
+    height: 36
   },
   title: {
     fontSize: 14,

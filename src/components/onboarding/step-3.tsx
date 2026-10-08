@@ -24,7 +24,7 @@ export default function Step3({ onNext, onBack, disabled }: StepProps) {
             return (
               <View key={deposit.type} style={[styles.card, { backgroundColor: theme.card, borderColor: theme.tabBarBorder }]}>
                 <View style={[styles.iconBox, { backgroundColor: colors.background }]}>
-                  <Image source={deposit.type === "kasten" ? AssetImages.box : AssetImages.bottle} style={[styles.icon, { tintColor: colors.foreground }]} />
+                  <Image resizeMode="contain" source={deposit.type === "kasten" ? AssetImages.box : AssetImages.bottle} style={styles.icon} tintColor={colors.foreground} />
                 </View>
                 <View style={styles.cardText}>
                   <ThemedText style={styles.cardTitle}>{deposit.label}</ThemedText>
@@ -97,8 +97,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 20,
-    height: 20,
-    resizeMode: "contain"
+    height: 20
   },
   cardText: {
     flex: 1

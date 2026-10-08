@@ -23,7 +23,7 @@ export function DepositBreakdownCard({ summary, style }: DepositBreakdownCardPro
         return (
           <View key={entry.type} style={styles.row}>
             <View style={[styles.iconBox, { backgroundColor: colors.background }]}>
-              <Image source={entry.type === "kasten" ? AssetImages.box : AssetImages.bottle} style={[styles.icon, { tintColor: colors.foreground }]} />
+              <Image resizeMode="contain" source={entry.type === "kasten" ? AssetImages.box : AssetImages.bottle} style={styles.icon} tintColor={colors.foreground} />
             </View>
             <View style={styles.rowText}>
               <ThemedText style={styles.label}>{entry.label}</ThemedText>
@@ -70,8 +70,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 20,
-    height: 20,
-    resizeMode: "contain"
+    height: 20
   },
   rowText: {
     flex: 1

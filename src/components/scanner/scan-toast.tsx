@@ -20,7 +20,7 @@ export function ScanToast({ title, amount, type }: ScanToastProps) {
     <Animated.View entering={FadeInUp.duration(220)} exiting={FadeOutUp.duration(200)} accessibilityLiveRegion="polite" accessibilityRole="alert"
     style={[styles.toast, { backgroundColor: theme.card, borderColor: theme.tabBarBorder }]}>
       <View style={[styles.iconWrap, { backgroundColor: colors.background }]}>
-        <Image source={type === "kasten" ? AssetImages.box : AssetImages.bottle} style={[styles.icon, { tintColor: colors.foreground }]} />
+        <Image resizeMode="contain" source={type === "kasten" ? AssetImages.box : AssetImages.bottle} style={styles.icon} tintColor={colors.foreground} />
       </View>
       <View style={styles.text}>
         <ThemedText style={styles.title} numberOfLines={1}>{title}</ThemedText>
@@ -41,11 +41,7 @@ const styles = StyleSheet.create({
     paddingRight: Spacing.three,
     borderRadius: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    shadowColor: "#000000",
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 6
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.18)"
   },
   iconWrap: {
     width: 36,
@@ -56,8 +52,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 20,
-    height: 20,
-    resizeMode: "contain"
+    height: 20
   },
   text: {
     flex: 1

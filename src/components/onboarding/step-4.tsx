@@ -42,7 +42,7 @@ export default function Step4({ onFinish, disabled }: StepProps) {
 
   return (
     <View style={styles.container}>
-      <Image source={AssetImages.hero4} style={styles.image} />
+      <Image resizeMode="contain" source={AssetImages.hero4} style={styles.image} />
       <View style={styles.content}>
         <ThemedText style={styles.title}>Kamera für den Barcode-Scan.</ThemedText>
         <ThemedText style={[styles.description, { color: theme.textSecondary }]}>Ohne Kamera kann Pfandkasse keine Flaschen erkennen. Du kannst sie jederzeit in den Einstellungen deines Handys wieder entziehen</ThemedText>
@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
     marginTop: Spacing.five,
     width: "100%",
-    height: 200,
-    resizeMode: "contain"
+    height: 200
   }
 });

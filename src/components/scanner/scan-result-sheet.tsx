@@ -73,7 +73,7 @@ export function ScanResultSheet({ ean, match, loading, onAdd, onDiscard }: ScanR
     if (match?.source === "catalog") {
       return (
         <View style={styles.status}>
-          <Image source={AssetImages.check} style={[styles.statusIcon, { tintColor: theme.primary }]} />
+          <Image resizeMode="contain" source={AssetImages.check} style={styles.statusIcon} tintColor={theme.primary} />
           <ThemedText style={[styles.statusText, { color: theme.primary }]}>Erkannt</ThemedText>
         </View>
       );
@@ -92,7 +92,7 @@ export function ScanResultSheet({ ean, match, loading, onAdd, onDiscard }: ScanR
 
       <View style={styles.header}>
         <View style={[styles.iconBox, { backgroundColor: loading ? theme.background : colors.background }]}>
-          {loading ? <ActivityIndicator color={theme.textSecondary} /> : <Image source={AssetImages.bottle} style={[styles.icon, { tintColor: colors.foreground }]} />}
+          {loading ? <ActivityIndicator color={theme.textSecondary} /> : <Image resizeMode="contain" source={AssetImages.bottle} style={styles.icon} tintColor={colors.foreground} />}
         </View>
         <View style={styles.headerText}>
           {renderStatus()}
@@ -181,8 +181,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 22,
-    height: 22,
-    resizeMode: "contain"
+    height: 22
   },
   headerText: {
     flex: 1
@@ -194,8 +193,7 @@ const styles = StyleSheet.create({
   },
   statusIcon: {
     width: 12,
-    height: 12,
-    resizeMode: "contain"
+    height: 12
   },
   statusText: {
     fontSize: 12,

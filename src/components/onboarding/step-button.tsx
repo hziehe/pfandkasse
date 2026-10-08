@@ -28,7 +28,7 @@ export function StepButton({ label, onPress, disabled, variant = "primary", icon
         variant === "primary" && { backgroundColor: theme.primary },
         variant === "secondary" && [styles.secondaryButton, { borderColor: theme.primary }], 
         variant === "borderless" && styles.borderless, { opacity: pressed ? 0.7 : 1 }, style ]}>
-      {icon && <Image source={icon} style={[styles.icon, { tintColor: isPrimary ? "#ffffff" : theme.primary }]} />}
+      {icon && <Image resizeMode="contain" source={icon} style={styles.icon} tintColor={isPrimary ? "#ffffff" : theme.primary} />}
       <ThemedText style={[styles.buttonText, !isPrimary && { color: theme.primary }]}>
         {label}
       </ThemedText>
@@ -47,8 +47,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 18,
-    height: 18,
-    resizeMode: "contain"
+    height: 18
   },
   secondaryButton: {
     borderWidth: 1.5

@@ -19,7 +19,7 @@ export function LatestScanCard({ scan, now, onUndo }: LatestScanCardProps) {
   return (
     <View style={[styles.latest, { backgroundColor: theme.inverseCard }]}>
       <View style={[styles.iconBox, { backgroundColor: colors.background }]}>
-        <Image source={scan.type === "kasten" ? AssetImages.box : AssetImages.bottle} style={[styles.icon, { tintColor: colors.foreground }]} />
+        <Image resizeMode="contain" source={scan.type === "kasten" ? AssetImages.box : AssetImages.bottle} style={styles.icon} tintColor={colors.foreground} />
       </View>
       <View style={styles.latestText}>
         <ThemedText style={[styles.latestTitle, { color: theme.inverseText }]}>{formatScanTitle(scan)}</ThemedText>
@@ -28,7 +28,7 @@ export function LatestScanCard({ scan, now, onUndo }: LatestScanCardProps) {
         </ThemedText>
       </View>
       <Pressable accessibilityRole="button" onPress={onUndo} style={({ pressed }) => [styles.undo, { opacity: pressed ? 0.7 : 1 }]}>
-        <Image source={AssetImages.undo} style={[styles.undoIcon, { tintColor: theme.inverseText }]} />
+        <Image resizeMode="contain" source={AssetImages.undo} style={styles.undoIcon} tintColor={theme.inverseText} />
         <ThemedText style={[styles.undoText, { color: theme.inverseText }]}>Rückgängig</ThemedText>
       </Pressable>
     </View>
@@ -52,8 +52,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 22,
-    height: 22,
-    resizeMode: "contain"
+    height: 22
   },
   latestText: {
     flex: 1
@@ -79,8 +78,7 @@ const styles = StyleSheet.create({
   },
   undoIcon: {
     width: 18,
-    height: 18,
-    resizeMode: "contain"
+    height: 18
   },
   undoText: {
     fontSize: 15,

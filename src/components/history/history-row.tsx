@@ -28,7 +28,7 @@ export function HistoryRow({ record, highlighted, divider, onPress }: HistoryRow
         <ThemedText style={[styles.details, { color: theme.textSecondary }]} numberOfLines={1}>{formatDepositDetails(record)}</ThemedText>
       </View>
       <ThemedText style={styles.amount}>{formatEuro(record.total)}</ThemedText>
-      <Image source={AssetImages.left} style={[styles.chevron, { tintColor: theme.textSecondary }]} />
+      <Image resizeMode="contain" source={AssetImages.left} style={styles.chevron} tintColor={theme.textSecondary} />
     </Pressable>
   );
 }
@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     marginLeft: -Spacing.two,
-    resizeMode: "contain",
     transform: [{ rotate: "180deg" }]
   }
 });

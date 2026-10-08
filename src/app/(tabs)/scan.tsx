@@ -15,7 +15,7 @@ import { CameraView, useCameraPermissions, type BarcodeScanningResult } from "ex
 import { router, useFocusEffect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Image, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from "react-native";
+import { Image, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, View, type LayoutChangeEvent, type TextStyle } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withSpring, withTiming } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -175,7 +175,7 @@ export default function ScanScreen() {
             <View style={styles.topBarSide}>
               <Pressable accessibilityRole="button" accessibilityLabel={result ? "Scan verwerfen" : "Scanner schließen"} hitSlop={8} onPress={handleClose}
               style={({ pressed }) => [styles.roundButton, { opacity: pressed ? 0.7 : 1 }]}>
-                <Image source={AssetImages.close} style={[styles.buttonIcon, { tintColor: OVERLAY_TEXT }]} />
+                <Image resizeMode="contain" source={AssetImages.close} style={styles.buttonIcon} tintColor={OVERLAY_TEXT} />
               </Pressable>
             </View>
             <Animated.View style={[styles.pill, pillStyle]} onLayout={(event) => { pillCenter.current = centerOf(event); }}>
@@ -184,21 +184,21 @@ export default function ScanScreen() {
             <View style={[styles.topBarSide, styles.topBarRight]}>
               <Pressable accessibilityRole="switch" accessibilityLabel="Taschenlampe" accessibilityState={{ checked: torch }} disabled={!granted} hitSlop={4}
               onPress={() => setTorch((on) => !on)} style={({ pressed }) => [styles.roundButton, torch && { backgroundColor: OVERLAY_TEXT }, { opacity: !granted ? 0.4 : pressed ? 0.7 : 1 }]}>
-                <Image source={AssetImages.flashlight} style={[styles.buttonIcon, { tintColor: torch ? theme.inverseCard : OVERLAY_TEXT }]} />
+                <Image resizeMode="contain" source={AssetImages.flashlight} style={styles.buttonIcon} tintColor={torch ? theme.inverseCard : OVERLAY_TEXT} />
               </Pressable>
               <Pressable accessibilityRole="button" accessibilityLabel="Einstellungen" hitSlop={4} onPress={() => router.push("/settings")}
               style={({ pressed }) => [styles.roundButton, { opacity: pressed ? 0.7 : 1 }]}>
-                <Image source={AssetImages.settings} style={[styles.buttonIcon, { tintColor: OVERLAY_TEXT }]} />
+                <Image resizeMode="contain" source={AssetImages.settings} style={styles.buttonIcon} tintColor={OVERLAY_TEXT} />
               </Pressable>
             </View>
           </View>
-          <View style={[styles.center, { paddingBottom: result ? sheetHeight : 0 }]} pointerEvents="box-none">
+          <View style={[styles.center, { paddingBottom: result ? sheetHeight : 0, pointerEvents: "box-none" }]}>
             {granted ?
               <>
-                <Image source={AssetImages.scanTemplate} style={styles.frame} onLayout={(event) => { frameCenter.current = centerOf(event); }} />
+                <Image resizeMode="contain" source={AssetImages.scanTemplate} style={styles.frame} onLayout={(event) => { frameCenter.current = centerOf(event); }} />
                 <ThemedText style={styles.hint}>Barcode im Rahmen halten</ThemedText>
                 <Pressable accessibilityRole="button" onPress={() => router.push("/add-crate")} style={({ pressed }) => [styles.crateButton, { opacity: pressed ? 0.7 : 1 }]}>
-                  <Image source={AssetImages.box} style={styles.crateIcon} />
+                  <Image resizeMode="contain" source={AssetImages.box} style={styles.crateIcon} tintColor={OVERLAY_TEXT} />
                   <ThemedText style={styles.crateText}>Ganzen Kasten hinzufügen</ThemedText>
                 </Pressable>
               </> :
@@ -220,7 +220,7 @@ export default function ScanScreen() {
 
           {flights.map((flight) => <FlyingBottle key={flight.id} id={flight.id} from={flight.from} to={flight.to} type={flight.type} onArrive={handleArrive} />)}
           {toast &&
-            <View style={[styles.toastContainer, { top: topBarHeight }]} pointerEvents="none">
+            <View style={[styles.toastContainer, { top: topBarHeight, pointerEvents: "none" }]}>
               <ScanToast key={toast.id} title={toast.title} amount={toast.amount} type={toast.type} />
             </View>
           }
@@ -265,8 +265,7 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     width: 20,
-    height: 20,
-    resizeMode: "contain"
+    height: 20
   },
   pill: {
     paddingHorizontal: Spacing.three,
@@ -291,15 +290,16 @@ const styles = StyleSheet.create({
   frame: {
     width: "80%",
     maxWidth: 320,
-    aspectRatio: 270 / 170,
-    resizeMode: "contain"
+    aspectRatio: 270 / 170
   },
   hint: {
     color: OVERLAY_TEXT,
     fontSize: 14,
     lineHeight: 20,
-    textShadowColor: "rgba(0, 0, 0, 0.6)",
-    textShadowRadius: 4
+    ...Platform.select<TextStyle>({
+      web: { textShadow: "0px 0px 4px rgba(0, 0, 0, 0.6)" } as TextStyle,
+      default: { textShadowColor: "rgba(0, 0, 0, 0.6)", textShadowRadius: 4 }
+    })
   },
   crateButton: {
     flexDirection: "row",
@@ -314,9 +314,7 @@ const styles = StyleSheet.create({
   },
   crateIcon: {
     width: 18,
-    height: 18,
-    resizeMode: "contain",
-    tintColor: OVERLAY_TEXT
+    height: 18
   },
   crateText: {
     color: OVERLAY_TEXT,

@@ -11,7 +11,7 @@ export default function Step1({ onNext, disabled }: StepProps) {
 
   return (
     <View style={styles.container}>
-      <Image source={AssetImages.hero} style={styles.image} />
+      <Image resizeMode="contain" source={AssetImages.hero} style={styles.image} />
       <View style={styles.content}>
         <ThemedText style={styles.title}>Wissen, was im Pfandbeutel steckt.</ThemedText>
         <ThemedText style={[styles.description, { color: theme.textSecondary }]}>
@@ -20,17 +20,17 @@ export default function Step1({ onNext, disabled }: StepProps) {
         </ThemedText>
         <View style={styles.bulletList}>
           <View style={[styles.row, styles.bulletPoint]}>
-            <Image source={AssetImages.scanBarcode} style={styles.imageSmall} />
+            <Image resizeMode="contain" source={AssetImages.scanBarcode} style={styles.imageSmall} />
             <ThemedText style={styles.bulletText}>
               Einweg, Mehrweg, Glas und Kästen zählen
             </ThemedText>
           </View>
           <View style={[styles.row, styles.bulletPoint]}>
-            <Image source={AssetImages.wifiOff} style={styles.imageSmall} />
+            <Image resizeMode="contain" source={AssetImages.wifiOff} style={styles.imageSmall} />
             <ThemedText style={styles.bulletText}>Funktioniert komplett offline</ThemedText>
           </View>
           <View style={[styles.row, styles.bulletPoint]}>
-            <Image source={AssetImages.clock} style={styles.imageSmall} />
+            <Image resizeMode="contain" source={AssetImages.clock} style={styles.imageSmall} />
             <ThemedText style={styles.bulletText}>Alle Abgaben im Verlauf</ThemedText>
           </View>
         </View>
@@ -68,13 +68,11 @@ const styles = StyleSheet.create({
     zIndex: 1,
     marginTop: Spacing.six,
     width: "100%",
-    height: 200,
-    resizeMode: "contain"
+    height: 200
   },
   imageSmall: {
     width: 35,
     height: 35,
-    resizeMode: "contain",
     color: "#000",
     backgroundColor: "#fff",
     borderWidth: 0.5,

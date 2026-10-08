@@ -17,12 +17,12 @@ export function SessionActions({ onAddCrate, onFinish, finishDisabled = false }:
     <View style={styles.row}>
       <Pressable accessibilityRole="button" onPress={onAddCrate} 
       style={({ pressed }) => [styles.button, styles.secondary, { backgroundColor: theme.card, borderColor: theme.tabBarBorder, opacity: pressed ? 0.7 : 1 }]}>
-        <Image source={AssetImages.box} style={[styles.icon, { tintColor: theme.text }]} />
+        <Image resizeMode="contain" source={AssetImages.box} style={styles.icon} tintColor={theme.text} />
         <ThemedText style={styles.label} numberOfLines={1}>Kiste hinzufügen</ThemedText>
       </Pressable>
       <Pressable accessibilityRole="button" accessibilityState={{ disabled: finishDisabled }} disabled={finishDisabled} onPress={onFinish} 
       style={({ pressed }) => [styles.button, { backgroundColor: theme.inverseCard, opacity: finishDisabled ? 0.5 : pressed ? 0.7 : 1 }]}>
-        <Image source={AssetImages.check} style={[styles.icon, { tintColor: theme.inverseText }]} />
+        <Image resizeMode="contain" source={AssetImages.check} style={styles.icon} tintColor={theme.inverseText} />
         <ThemedText style={[styles.label, { color: theme.inverseText }]} numberOfLines={1}>Abschließen</ThemedText>
       </Pressable>
     </View>
@@ -50,8 +50,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 18,
-    height: 18,
-    resizeMode: "contain"
+    height: 18
   },
   label: {
     fontSize: 15,

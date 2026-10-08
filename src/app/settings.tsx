@@ -207,7 +207,7 @@ export default function SettingsScreen() {
         <Section title="Daten">
           <Pressable accessibilityRole="button" onPress={exportHistory} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
             <ThemedText style={styles.rowLabel}>Verlauf als CSV exportieren</ThemedText>
-            <Image source={AssetImages.left} style={[styles.chevron, { tintColor: theme.textSecondary }]} />
+            <Image resizeMode="contain" source={AssetImages.left} style={styles.chevron} tintColor={theme.textSecondary} />
           </Pressable>
         </Section>
         <Pressable accessibilityRole="button" onPress={() => confirmDeleteAll(deleteAllData)}
@@ -323,7 +323,6 @@ const styles = StyleSheet.create({
   chevron: {
     width: 16,
     height: 16,
-    resizeMode: "contain",
     transform: [{ rotate: "180deg" }]
   },
   dangerButton: {

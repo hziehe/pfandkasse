@@ -1,7 +1,7 @@
 import { formatEuro } from "@/constants/deposit";
 import { loadSession, summarize, useScans, useSessionLoaded, type ScanEntry } from "@/lib/deposit-session";
 import { loadSettings, useSettings, type Settings } from "@/lib/settings";
-import * as Notifications from "expo-notifications";
+import type * as NotificationsModule from "expo-notifications";
 import { router, usePathname } from "expo-router";
 import { useEffect, useRef } from "react";
 import { AppState, Platform } from "react-native";
@@ -12,6 +12,9 @@ const CHANNEL_ID = "deposit-reminder";
 const TARGET_PATH = "/submission-preparation";
 const DAY_MS = 86_400_000;
 const SUPPORTED = Platform.OS !== "web";
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const Notifications: typeof NotificationsModule = SUPPORTED ? require("expo-notifications") : null!;
 
 export type ReminderPlan = {
   date: Date;
@@ -155,7 +158,7 @@ export function useReminderResponse() {
   useEffect(() => {
     if (!SUPPORTED) return;
 
-    function handle(response: Notifications.NotificationResponse) {
+    function handle(response: NotificationsModule.NotificationResponse) {
       const { notification } = response;
       if (notification.request.identifier !== REMINDER_ID && notification.request.identifier !== TEST_ID) return;
       if (response.actionIdentifier !== Notifications.DEFAULT_ACTION_IDENTIFIER) return;

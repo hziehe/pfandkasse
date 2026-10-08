@@ -53,7 +53,7 @@ export default function Step2({ onNext, onBack, disabled }: StepProps) {
               <View key={step.label} style={styles.step}>
                 <View style={styles.timeline}>
                   <View style={[styles.iconBox, { backgroundColor: step.highlight ? theme.primary : "#14281D" }]}>
-                    <Image source={step.icon} style={styles.icon} tintColor="#fff" />
+                    <Image resizeMode="contain" source={step.icon} style={styles.icon} tintColor="#fff" />
                   </View>
                   {!isLast && <View style={[styles.line, { backgroundColor: theme.tabBarBorder }]} />}
                 </View>
@@ -114,8 +114,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     width: 20,
-    height: 20,
-    resizeMode: "contain"
+    height: 20
   },
   line: {
     flex: 1,

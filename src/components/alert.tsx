@@ -13,7 +13,7 @@ type AlertProps = {
 export function Alert({ children, icon = AssetImages.alert, style }: AlertProps) {
   return (
     <View style={[styles.alert, style]}>
-      <Image source={icon} style={styles.icon} />
+      <Image resizeMode="contain" source={icon} style={styles.icon} tintColor={Colors.light.primary} />
       <ThemedText style={styles.text}>{children}</ThemedText>
     </View>
   );
@@ -32,8 +32,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
-    resizeMode: "contain",
-    tintColor: Colors.light.primary,
     padding: 5
   },
   text: {

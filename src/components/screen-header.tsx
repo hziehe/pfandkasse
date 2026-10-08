@@ -23,7 +23,7 @@ export function ScreenHeader({ title }: ScreenHeaderProps) {
   return (
     <View style={styles.header}>
       <Pressable accessibilityRole="button" accessibilityLabel="Zurück" hitSlop={8} onPress={goBack} style={({ pressed }) => [styles.backButton, { backgroundColor: theme.card, borderColor: theme.tabBarBorder, opacity: pressed ? 0.7 : 1 }]}>
-        <Image source={AssetImages.left} style={[styles.backIcon, { tintColor: theme.text }]} />
+        <Image resizeMode="contain" source={AssetImages.left} style={styles.backIcon} tintColor={theme.text} />
       </Pressable>
       <ThemedText type="subtitle">{title}</ThemedText>
     </View>
@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     width: 22,
-    height: 22,
-    resizeMode: "contain"
+    height: 22
   }
 });

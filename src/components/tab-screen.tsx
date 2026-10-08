@@ -84,7 +84,7 @@ export function TabScreen({ title, fullBleed = false, children }: TabScreenProps
           {isTab && !fullBleed &&
             <Pressable accessibilityRole="button" accessibilityLabel="Einstellungen" hitSlop={8} onPress={() => router.push("/settings")}
             style={({ pressed }) => [styles.settings, { backgroundColor: theme.card, borderColor: theme.tabBarBorder, opacity: pressed ? 0.7 : 1 }]}>
-              <Image source={AssetImages.settings} style={[styles.settingsIcon, { tintColor: theme.text }]} />
+              <Image resizeMode="contain" source={AssetImages.settings} style={styles.settingsIcon} tintColor={theme.text} />
             </Pressable>
           }
         </View>
@@ -140,8 +140,7 @@ const styles = StyleSheet.create({
   },
   settingsIcon: {
     width: 22,
-    height: 22,
-    resizeMode: "contain"
+    height: 22
   },
   edge: {
     position: "absolute",
