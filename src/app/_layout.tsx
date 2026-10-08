@@ -1,6 +1,7 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useReminderSync } from "@/lib/deposit-reminder";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -9,6 +10,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
 
   const colorScheme = useColorScheme();
+  useReminderSync();
 
   return (
     <GestureHandlerRootView style={styles.root}>

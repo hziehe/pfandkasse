@@ -11,18 +11,48 @@ import { clearSession, loadSession, seedDemoSession } from "@/lib/deposit-sessio
 import { resetOnboardingCompleted } from "@/lib/onboarding";
 import { haptic } from "@/lib/haptics";
 import { clearProducts } from "@/lib/product-catalog";
-import { resetSettings, setSetting, useSettings, type Settings } from "@/lib/settings";
+import { requestReminderPermission, triggerTestReminder } from "@/lib/deposit-reminder";
+import { REMINDER_DAY_OPTIONS, REMINDER_HOUR_OPTIONS, REMINDER_MIN_AMOUNT_OPTIONS, resetSettings, setSetting, useSettings, type Settings } from "@/lib/settings";
 import Constants from "expo-constants";
 import { router } from "expo-router";
 import { Fragment, useState, type ReactNode } from "react";
-import { Alert, Image, Platform, Pressable, ScrollView, Share, StyleSheet, Switch, View } from "react-native";
+import { Alert, Image, Linking, Platform, Pressable, ScrollView, Share, StyleSheet, Switch, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const SCANNER_OPTIONS: { key: keyof Settings; label: string; hint: string }[] = [
+type ToggleKey = "sound" | "vibration" | "autoAdd";
+
+const SCANNER_OPTIONS: { key: ToggleKey; label: string; hint: string }[] = [
   { key: "sound", label: "Ton beim Scannen", hint: "Kurzer Piepton bei Treffer" },
   { key: "vibration", label: "Vibration", hint: "Haptisches Feedback" },
   { key: "autoAdd", label: "Automatisch hinzufügen", hint: "Ohne Bestätigung zählen" },
 ];
+
+const REMINDER_DAY_LABELS: Record<Settings["reminderDays"], string> = { 3: "3 Tage", 7: "7 Tage", 14: "14 Tage" };
+const REMINDER_MIN_AMOUNT_LABELS: Record<Settings["reminderMinAmount"], string> = { 0: "Immer", 300: "3 €", 500: "5 €", 1000: "10 €" };
+const REMINDER_HOUR_LABELS: Record<Settings["reminderHour"], string> = { 9: "9:00", 18: "18:00", 20: "20:00" };
+
+async function toggleReminder(enabled: boolean) {
+  haptic("tap");
+  if (!enabled) {
+    setSetting("reminderEnabled", false);
+    return;
+  }
+  if (await requestReminderPermission()) {
+    setSetting("reminderEnabled", true);
+    return;
+  }
+  Alert.alert("Benachrichtigungen aus", "Erlaube Benachrichtigungen für Pfandkasse in den Systemeinstellungen, um erinnert zu werden.", [
+    { text: "Abbrechen", style: "cancel" },
+    { text: "Einstellungen öffnen", onPress: () => Linking.openSettings() },
+  ]);
+}
+
+async function testReminder() {
+  haptic("tap");
+  if (!(await triggerTestReminder())) {
+    Alert.alert("Benachrichtigungen aus", "Erlaube Benachrichtigungen für Pfandkasse in den Systemeinstellungen.");
+  }
+}
 
 function confirmDeleteAll(onConfirm: () => void) {
   const title = "Alle Daten löschen?";
@@ -74,6 +104,36 @@ function Divider() {
   return <View style={[styles.divider, { backgroundColor: theme.tabBarBorder }]} />;
 }
 
+type ChoiceRowProps<T extends number> = {
+  label: string;
+  options: readonly T[];
+  labels: Record<T, string>;
+  value: T;
+  onChange: (value: T) => void;
+};
+
+function ChoiceRow<T extends number>({ label, options, labels, value, onChange }: ChoiceRowProps<T>) {
+
+  const theme = useTheme();
+
+  return (
+    <View style={styles.choiceRow}>
+      <ThemedText style={styles.rowLabel}>{label}</ThemedText>
+      <View accessibilityRole="radiogroup" accessibilityLabel={label} style={[styles.choices, { backgroundColor: theme.backgroundSelected }]}>
+        {options.map((option) => {
+          const selected = option === value;
+          return (
+            <Pressable key={option} accessibilityRole="radio" accessibilityState={{ selected }} onPress={() => { onChange(option); haptic("tap"); }}
+            style={({ pressed }) => [styles.choice, selected && { backgroundColor: theme.card }, { opacity: pressed ? 0.7 : 1 }]}>
+              <ThemedText style={[styles.choiceText, { color: selected ? theme.primary : theme.textSecondary }]}>{labels[option]}</ThemedText>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 export default function SettingsScreen() {
 
   const theme = useTheme();
@@ -122,6 +182,28 @@ export default function SettingsScreen() {
             </Fragment>
           )}
         </Section>
+        {Platform.OS !== "web" &&
+          <Section title="Erinnerung">
+            <View style={styles.row}>
+              <View style={styles.rowText}>
+                <ThemedText style={styles.rowLabel}>Ans Abgeben erinnern</ThemedText>
+                <ThemedText themeColor="textSecondary" style={styles.rowHint}>Benachrichtigung, wenn sich Pfand sammelt</ThemedText>
+              </View>
+              <Switch accessibilityLabel="Ans Abgeben erinnern" value={settings.reminderEnabled} onValueChange={toggleReminder}
+              trackColor={{ false: theme.backgroundSelected, true: theme.primary }} thumbColor="#FFFFFF" ios_backgroundColor={theme.backgroundSelected} />
+            </View>
+            {settings.reminderEnabled &&
+              <>
+                <Divider />
+                <ChoiceRow label="Nach" options={REMINDER_DAY_OPTIONS} labels={REMINDER_DAY_LABELS} value={settings.reminderDays} onChange={(value) => setSetting("reminderDays", value)} />
+                <Divider />
+                <ChoiceRow label="Ab Betrag" options={REMINDER_MIN_AMOUNT_OPTIONS} labels={REMINDER_MIN_AMOUNT_LABELS} value={settings.reminderMinAmount} onChange={(value) => setSetting("reminderMinAmount", value)} />
+                <Divider />
+                <ChoiceRow label="Uhrzeit" options={REMINDER_HOUR_OPTIONS} labels={REMINDER_HOUR_LABELS} value={settings.reminderHour} onChange={(value) => setSetting("reminderHour", value)} />
+              </>
+            }
+          </Section>
+        }
         <Section title="Daten">
           <Pressable accessibilityRole="button" onPress={exportHistory} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
             <ThemedText style={styles.rowLabel}>Verlauf als CSV exportieren</ThemedText>
@@ -141,6 +223,17 @@ export default function SettingsScreen() {
             <Pressable accessibilityRole="button" disabled={resetting} onPress={resetOnboarding} style={({ pressed }) => [styles.row, { opacity: pressed || resetting ? 0.6 : 1 }]}>
               <ThemedText style={styles.rowLabel}>Onboarding zurücksetzen</ThemedText>
             </Pressable>
+            {Platform.OS !== "web" &&
+              <>
+                <Divider />
+                <Pressable accessibilityRole="button" onPress={testReminder} style={({ pressed }) => [styles.row, { opacity: pressed ? 0.6 : 1 }]}>
+                  <View style={styles.rowText}>
+                    <ThemedText style={styles.rowLabel}>Erinnerung testen</ThemedText>
+                    <ThemedText themeColor="textSecondary" style={styles.rowHint}>Kommt in 5 Sekunden, App dafür schließen</ThemedText>
+                  </View>
+                </Pressable>
+              </>
+            }
           </Section>
         }
       </ScrollView>
@@ -199,6 +292,28 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
     fontWeight: 700,
+    fontVariant: ["tabular-nums"]
+  },
+  choiceRow: {
+    gap: Spacing.two,
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.two + Spacing.one
+  },
+  choices: {
+    flexDirection: "row",
+    padding: Spacing.half,
+    borderRadius: 10
+  },
+  choice: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: Spacing.one + Spacing.half,
+    borderRadius: 8
+  },
+  choiceText: {
+    fontSize: 13,
+    lineHeight: 18,
+    fontWeight: 600,
     fontVariant: ["tabular-nums"]
   },
   divider: {
