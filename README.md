@@ -1,5 +1,7 @@
 # Pfandkasse
 
+![Expo](https://img.shields.io/badge/Expo-SDK%2057-000020?logo=expo&logoColor=white) ![License](https://img.shields.io/badge/License-MIT-4c1) ![Android](https://img.shields.io/badge/Android-3DDC84?logo=android&logoColor=white) ![iOS](https://img.shields.io/badge/iOS-000000?logo=apple&logoColor=white)
+
 **Know what's in your bottle bag.**
 
 Pfandkasse is a mobile app for scanning and counting deposit bottles under the German *Pfand* system. You scan your bottles at home before heading to the reverse vending machine, so you know in advance exactly how much deposit you'll get back. Every return is then saved to your history.
